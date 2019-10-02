@@ -2,16 +2,26 @@ var express = require('express');
 var router = express.Router();
 const request = require('request-promise');
 
-const clientId = '22B538'
-const clientSecret = 'c8a76dd920bf40ff80f9e64f20b3860d'
+const clientId = '22B595'
+const clientSecret = 'c46444c0fe1cc9d5b8a5c020d7abefea'
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
     if (!("code" in req.query))
         next(new Error('no code'))
     const code = req.query.code
-    const data = await getToken(clientId, clientSecret, code)
-    console.log(data)
+    const token = await getToken(clientId, clientSecret, code)
+    console.log(token)
+    // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
+    // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/01:00/01:10.json")
+    // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/00:00/05:00.json")
+    const data = await getData(token, "https://api.fitbit.com/1/user/7S7TPW/activities/heart/date/2019-10-01/2019-10-02/1sec.json")
+
+
+    var util = require('util');
+    console.log(util.inspect(data, false, null));
+    console.log(Object.keys(data))
+    // console.log(data2)
     res.render('getCode', {code: code});
 }, function (err, req, res, next) {
     res
@@ -19,7 +29,7 @@ router.get('/', async function (req, res, next) {
         .render('error', {error: err})
 });
 
-function getToken(clientId, clientSecret, code) {
+async function getToken(clientId, clientSecret, code) {
 
     const b64 = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
     const options = {
@@ -36,7 +46,21 @@ function getToken(clientId, clientSecret, code) {
             code
         }
     }
-    return request(options)
+    const data = JSON.parse(await request(options))
+    if (!("access_token" in data)) throw new Error("no token")
+    return data.access_token
+
+}
+
+async function getData(token, url) {
+    const options = {
+        url,
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }
+    return JSON.parse(await request(options))
 }
 
 module.exports = router;
