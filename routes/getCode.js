@@ -10,9 +10,9 @@ router.get('/', async function (req, res, next) {
     if (!("code" in req.query))
         next(new Error('no code'))
     const code = req.query.code
-    const data = await getToken(clientId, clientSecret, code)
-    console.log(data)
-    const data2 = await getData(JSON.parse(data)["access_token"], "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1m.json")
+    const token = await getToken(clientId, clientSecret, code)
+    console.log(token)
+    const data2 = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1m.json")
     console.log(data2)
     res.render('getCode', {code: code});
 }, function (err, req, res, next) {
@@ -38,16 +38,18 @@ async function getToken(clientId, clientSecret, code) {
             code
         }
     }
-    return request(options)
+    const data = JSON.parse(await request(options))
+    if (!("access_token" in data)) throw new Error("no token")
+    return data.access_token
+
 }
 
 function getData(token, url) {
-    const b64 = Buffer.from(token).toString('base64');
     const options = {
         url,
         method: 'GET',
         headers: {
-            'Authorization': `Basic ${b64}`
+            'Authorization': `Basic ${token}`
         }
     }
     return request(options)
