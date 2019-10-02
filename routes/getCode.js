@@ -44,15 +44,15 @@ async function getToken(clientId, clientSecret, code) {
 
 }
 
-function getData(token, url) {
+async function getData(token, url) {
     const options = {
         url,
         method: 'GET',
         headers: {
-            'Authorization': `Basic ${token}`
+            'Authorization': `Bearer ${token}`
         }
     }
-    return request(options)
+    return JSON.parse(await request(options))
 }
 
 module.exports = router;
