@@ -12,6 +12,8 @@ router.get('/', async function (req, res, next) {
     const code = req.query.code
     const data = await getToken(clientId, clientSecret, code)
     console.log(data)
+    const data2 = await getData(JSON.parse(data)["access_token"], "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1m.json")
+    console.log(data2)
     res.render('getCode', {code: code});
 }, function (err, req, res, next) {
     res
@@ -19,7 +21,7 @@ router.get('/', async function (req, res, next) {
         .render('error', {error: err})
 });
 
-function getToken(clientId, clientSecret, code) {
+async function getToken(clientId, clientSecret, code) {
 
     const b64 = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
     const options = {
@@ -34,6 +36,18 @@ function getToken(clientId, clientSecret, code) {
             "grant_type": "authorization_code",
             "redirect_uri": "http://127.0.0.1:8080/getCode",
             code
+        }
+    }
+    return request(options)
+}
+
+function getData(token, url) {
+    const b64 = Buffer.from(token).toString('base64');
+    const options = {
+        url,
+        method: 'GET',
+        headers: {
+            'Authorization': `Basic ${b64}`
         }
     }
     return request(options)
