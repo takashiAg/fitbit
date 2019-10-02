@@ -20,6 +20,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 var indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
+var getCodeRouter = require('./routes/getCode');
+app.use('/getCode', getCodeRouter);
+
 var usersRouter = require('./routes/users');
 app.use('/users', usersRouter);
 
