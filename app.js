@@ -23,6 +23,9 @@ app.use('/', indexRouter);
 var getCodeRouter = require('./routes/getCode');
 app.use('/getCode', getCodeRouter);
 
+var getDataRouter = require('./routes/getData');
+app.use('/getData', getDataRouter);
+
 var ImplicitGrantFlowRouter = require('./routes/ImplicitGrantFlow');
 app.use('/ImplicitGrantFlow', ImplicitGrantFlowRouter);
 
