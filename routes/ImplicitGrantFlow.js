@@ -23,7 +23,7 @@ router.get('/', async function (req, res, next) {
         filename: 'data/token.json',
         autoload: true // so that we don't have to call loadDatabase()
     })
-    await DB.insert(req.query)
+    await DB.insert([req.query])
     // console.log(token)
     // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
     // // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/01:00/01:10.json")
