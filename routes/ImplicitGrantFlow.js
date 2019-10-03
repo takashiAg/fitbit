@@ -5,6 +5,14 @@ const url = require('url')
 
 const clientId = '22B595'
 const clientSecret = 'c46444c0fe1cc9d5b8a5c020d7abefea'
+const datastore = require('nedb-promise')
+
+let DB = null
+
+DB = datastore({
+    filename: 'data/token.json',
+    autoload: true // so that we don't have to call loadDatabase()
+})
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -17,19 +25,20 @@ router.get('/', async function (req, res, next) {
         next(new Error('no token_type'))
 
     const token = req.query['access_token']
-    console.log(token)
-    const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
-    // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/01:00/01:10.json")
-    // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/00:00/05:00.json")
-    // const data = await getData(token, "https://api.fitbit.com/1/user/7S7TPW/activities/heart/date/2019-10-01/2019-10-02/1sec.json")
-    const dataset = data["activities-heart-intraday"].dataset
-
-    console.log(dataset)
-    // var util = require('util');
-    // console.log(util.inspect(data, false, null));
-    console.log(Object.keys(data))
-    // console.log(data2)
-    res.render('getCode', {code: "code"});
+    await DB.insert(req.query)
+    // console.log(token)
+    // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
+    // // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/01:00/01:10.json")
+    // // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/00:00/05:00.json")
+    // // const data = await getData(token, "https://api.fitbit.com/1/user/7S7TPW/activities/heart/date/2019-10-01/2019-10-02/1sec.json")
+    // const dataset = data["activities-heart-intraday"].dataset
+    //
+    // console.log(dataset)
+    // // var util = require('util');
+    // // console.log(util.inspect(data, false, null));
+    // console.log(Object.keys(data))
+    // // console.log(data2)
+    // res.render('getCode', {code: "code"});
 }, function (err, req, res, next) {
     res
         .status(400)
