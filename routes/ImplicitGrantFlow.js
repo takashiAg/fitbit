@@ -7,12 +7,6 @@ const clientId = '22B595'
 const clientSecret = 'c46444c0fe1cc9d5b8a5c020d7abefea'
 const datastore = require('nedb-promise')
 
-let DB = null
-
-DB = datastore({
-    filename: 'data/token.json',
-    autoload: true // so that we don't have to call loadDatabase()
-})
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -25,6 +19,10 @@ router.get('/', async function (req, res, next) {
         next(new Error('no token_type'))
 
     const token = req.query['access_token']
+    let DB = datastore({
+        filename: 'data/token.json',
+        autoload: true // so that we don't have to call loadDatabase()
+    })
     await DB.insert(req.query)
     // console.log(token)
     // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
