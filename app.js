@@ -30,6 +30,9 @@ app.use('/getCode', getCodeRouter);
 var getDataRouter = require('./routes/getData');
 app.use('/getData', getDataRouter);
 
+var getCSVRouter = require('./routes/getCSV');
+app.use('/getData', getCSVRouter);
+
 var ImplicitGrantFlowRouter = require('./routes/ImplicitGrantFlow');
 app.use('/ImplicitGrantFlow', ImplicitGrantFlowRouter);
 
