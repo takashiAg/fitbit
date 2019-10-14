@@ -48,7 +48,7 @@ function lined(dataset) {
         let d2 = {time: parseTime(data.time), value: data.value};
         // console.log(d1, d2)
         while (d1.time.hour !== d2.time.hour || d1.time.min !== d2.time.min || d1.time.sec !== d2.time.sec) {
-            console.log(d1, d2)
+            processedData.push({time: `${d1.time.hour}:${d1.time.min}:${d1.time.sec}`, value: d1.value})
             d1.time.sec += 1
             if (d1.time.sec >= 60) {
                 d1.time.sec -= 60
@@ -61,6 +61,8 @@ function lined(dataset) {
         }
         before = data
     })
+    console.log(processedData)
+    return processedData
 }
 
 async function getData(token, url) {
