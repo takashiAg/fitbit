@@ -37,6 +37,9 @@ function getTime(Second) {
     let second = Second % 60
     let min = ((Second - second) / 60) % 24
     let hour = (Second - min * 60 - second) / 24 / 60
+    second = ('0' + second).slice(-2)
+    min = ('0' + min).slice(-2)
+    hour = ('0' + hour).slice(-2)
     return `${hour}:${min}:${second}`
 }
 
@@ -56,8 +59,7 @@ function lined(dataset) {
         let d2 = {time: getSecond(data.time), value: data.value};
         console.log(d1, d2)
         while (d1.time < d2.time) {
-            // processedData.push({time: `${d1.time.hour}:${d1.time.min}:${d1.time.sec}`, value: d1.value})
-            processedData.push(Object.assign({}, d1))
+            processedData.push({time: getTime(d1.time), value: (d2.value - d1.value) / (d2.time - d1.time) * (d2.time - d1.time) + d1.value})
             d1.time += 1
         }
         before = data
