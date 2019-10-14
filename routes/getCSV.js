@@ -16,7 +16,12 @@ router.get('/', async function (req, res, next) {
     const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
     const dataset = data["activities-heart-intraday"].dataset
 
-    res.send(dataset)
+    let CsvData = "time,heartRate\n"
+
+    dataset.forEach(data=>{
+        CsvData += `${data.time},${data.value}\n`
+    })
+    res.send(CsvData)
 
 });
 
