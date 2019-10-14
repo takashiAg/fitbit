@@ -16,6 +16,7 @@ router.get('/', async function (req, res, next) {
     const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
     const dataset = data["activities-heart-intraday"].dataset
 
+    lined(dataset)
 
     let CsvData = "time,heartRate\n"
 
@@ -27,7 +28,7 @@ router.get('/', async function (req, res, next) {
 });
 
 function parseTime(time) {
-    let data = time.split(";")
+    let data = time.split(":")
     return {hour: data[0], min: data[1], sec: data[2]}
 }
 
@@ -37,12 +38,17 @@ function lined(dataset) {
     let before = {time: null, value: null}
 
     dataset.forEach(data => {
-        if (before.time === null && before.time === value)
+        console.log(before, data)
+        if (before.time === null && before.value === null) {
             before = data
+            return
+        }
+
         let d1 = {time: parseTime(before.time), value: before.value};
-        let d2 = {time: parseTime(before.time), value: before.value};
-        while (d1.time.hour === d2.time.hour && d1.time.min === d2.time.min && d1.time.sec === d2.time.sec) {
-            console.log(d1,d2)
+        let d2 = {time: parseTime(data.time), value: data.value};
+        console.log(d1, d2)
+        while (d1.time.hour !== d2.time.hour && d1.time.min !== d2.time.min && d1.time.sec !== d2.time.sec) {
+            console.log(d1, d2)
             d2.time.sec += 1
             if (d2.time.sec >= 60) {
                 d2.time.sec -= 60
@@ -53,6 +59,7 @@ function lined(dataset) {
                 d2.time.hour += 1
             }
         }
+        before = data
     })
 }
 
