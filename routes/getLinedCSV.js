@@ -29,7 +29,7 @@ router.get('/', async function (req, res, next) {
 
 function parseTime(time) {
     let data = time.split(":")
-    return {hour: data[0], min: data[1], sec: data[2]}
+    return {hour: data[0] - 0, min: data[1] - 0, sec: data[2] - 0}
 }
 
 function lined(dataset) {
@@ -38,7 +38,7 @@ function lined(dataset) {
     let before = {time: null, value: null}
 
     dataset.forEach(data => {
-        console.log(before, data)
+        // console.log(before, data)
         if (before.time === null && before.value === null) {
             before = data
             return
@@ -46,17 +46,17 @@ function lined(dataset) {
 
         let d1 = {time: parseTime(before.time), value: before.value};
         let d2 = {time: parseTime(data.time), value: data.value};
-        console.log(d1, d2)
-        while (d1.time.hour !== d2.time.hour && d1.time.min !== d2.time.min && d1.time.sec !== d2.time.sec) {
+        // console.log(d1, d2)
+        while (d1.time.hour !== d2.time.hour || d1.time.min !== d2.time.min || d1.time.sec !== d2.time.sec) {
             console.log(d1, d2)
-            d2.time.sec += 1
-            if (d2.time.sec >= 60) {
-                d2.time.sec -= 60
-                d2.time.min += 1
+            d1.time.sec += 1
+            if (d1.time.sec >= 60) {
+                d1.time.sec -= 60
+                d1.time.min += 1
             }
-            if (d2.time.min >= 60) {
-                d2.time.min -= 60
-                d2.time.hour += 1
+            if (d1.time.min >= 60) {
+                d1.time.min -= 60
+                d1.time.hour += 1
             }
         }
         before = data
