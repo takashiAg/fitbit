@@ -24,8 +24,8 @@ router.get('/', async function (req, res, next) {
         CsvData += `${data.time},${data.value}\n`
     })
 
-    res.setHeader( 'Content-Type', 'application/octet-stream' );
-    res.setHeader( 'Content-Disposition', 'attachment; filename=LinedData.csv' );
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment; filename=LinedData.csv');
 
     res.send(CsvData)
 
@@ -59,17 +59,22 @@ function lined(dataset) {
             return
         }
 
+        let d0 = {time: getSecond(before.time), value: before.value};
         let d1 = {time: getSecond(before.time), value: before.value};
         let d2 = {time: getSecond(data.time), value: data.value};
         console.log(d1, d2)
         while (d1.time < d2.time) {
-            processedData.push({time: getTime(d1.time), value: (d2.value - d1.value) / (d2.time - d1.time) * (d2.time - d1.time) + d1.value})
+            processedData.push({time: getTime(d1.time), value: map(d0.time, d2.time, d0.value, d2.value, d1.time)})
             d1.time += 1
         }
         before = data
     })
     console.log(processedData)
     return processedData
+}
+
+function map(x1, x2, y1, y2, x) {
+    return (y2 - y1) / (x2 - x1) * (x - x1) + y1
 }
 
 async function getData(token, url) {
