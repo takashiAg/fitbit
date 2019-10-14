@@ -27,9 +27,17 @@ router.get('/', async function (req, res, next) {
 
 });
 
-function parseTime(time) {
+function getSecond(time) {
     let data = time.split(":")
-    return {hour: data[0] - 0, min: data[1] - 0, sec: data[2] - 0}
+    return (data[0] - 0) * 24 * 60 + (data[1] - 0) * 60 + (data[2] - 0)
+}
+
+
+function getTime(Second) {
+    let second = Second % 60
+    let min = ((Second - second) / 60) % 24
+    let hour = (Second - min * 60 - second) / 24 / 60
+    return `${hour}:${min}:${second}`
 }
 
 function lined(dataset) {
@@ -44,20 +52,13 @@ function lined(dataset) {
             return
         }
 
-        let d1 = {time: parseTime(before.time), value: before.value};
-        let d2 = {time: parseTime(data.time), value: data.value};
-        // console.log(d1, d2)
-        while (d1.time.hour !== d2.time.hour || d1.time.min !== d2.time.min || d1.time.sec !== d2.time.sec) {
-            processedData.push({time: `${d1.time.hour}:${d1.time.min}:${d1.time.sec}`, value: d1.value})
-            d1.time.sec += 1
-            if (d1.time.sec >= 60) {
-                d1.time.sec -= 60
-                d1.time.min += 1
-            }
-            if (d1.time.min >= 60) {
-                d1.time.min -= 60
-                d1.time.hour += 1
-            }
+        let d1 = {time: getSecond(before.time), value: before.value};
+        let d2 = {time: getSecond(data.time), value: data.value};
+        console.log(d1, d2)
+        while (d1.time < d2.time) {
+            // processedData.push({time: `${d1.time.hour}:${d1.time.min}:${d1.time.sec}`, value: d1.value})
+            processedData.push(Object.assign({}, d1))
+            d1.time += 1
         }
         before = data
     })
