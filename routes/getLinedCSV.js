@@ -23,6 +23,10 @@ router.get('/', async function (req, res, next) {
     linedDataset.forEach(data => {
         CsvData += `${data.time},${data.value}\n`
     })
+
+    res.setHeader( 'Content-Type', 'application/octet-stream' );
+    res.setHeader( 'Content-Disposition', 'attachment; filename=LinedData.csv' );
+
     res.send(CsvData)
 
 });
