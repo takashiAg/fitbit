@@ -23,19 +23,7 @@ router.get(
       autoload: true // so that we don't have to call loadDatabase()
     });
     await DB.insert([req.query]);
-    // console.log(token)
-    // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
-    // // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/01:00/01:10.json")
-    // // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/00:00/05:00.json")
-    // // const data = await getData(token, "https://api.fitbit.com/1/user/7S7TPW/activities/heart/date/2019-10-01/2019-10-02/1sec.json")
-    // const dataset = data["activities-heart-intraday"].dataset
-    //
-    // console.log(dataset)
-    // // var util = require('util');
-    // // console.log(util.inspect(data, false, null));
-    // console.log(Object.keys(data))
-    // // console.log(data2)
-    res.render('getCode', {code: "code"});
+    res.render('index');
   },
   function(err, req, res, next) {
     if (err.message !== "no access_token") {

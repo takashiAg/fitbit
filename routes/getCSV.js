@@ -13,12 +13,12 @@ router.get('/', async function (req, res, next) {
 
     const token = tokendatabase.access_token;
 
-    const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
+    const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/2019-10-22/1d.json")
     const dataset = data["activities-heart-intraday"].dataset
 
     let CsvData = "time,heartRate\n"
 
-    dataset.forEach(data=>{
+    dataset.forEach(data => {
         CsvData += `${data.time},${data.value}\n`
     })
 
