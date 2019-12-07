@@ -1,29 +1,28 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-const request = require('request-promise');
-const url = require('url')
+const request = require("request-promise");
+const url = require("url");
 
-const clientId = '22B595'
-const clientSecret = 'c46444c0fe1cc9d5b8a5c020d7abefea'
-const datastore = require('nedb-promise')
-
+const clientId = "22B595";
+const clientSecret = "c46444c0fe1cc9d5b8a5c020d7abefea";
+const datastore = require("nedb-promise");
 
 /* GET home page. */
-router.get('/', async function (req, res, next) {
-    console.log(req.query)
+router.get(
+  "/",
+  async function(req, res, next) {
+    console.log(req.query);
     if (!("access_token" in req.query))
-        next(new Error('no access_token'))
-    if (!("user_id" in req.query))
-        next(new Error('no user_id'))
-    if (!("token_type" in req.query))
-        next(new Error('no token_type'))
+      return next(new Error("no access_token"));
+    if (!("user_id" in req.query)) return next(new Error("no user_id"));
+    if (!("token_type" in req.query)) return next(new Error("no token_type"));
 
-    const token = req.query['access_token']
+    const token = req.query["access_token"];
     let DB = datastore({
-        filename: 'data/token.json',
-        autoload: true // so that we don't have to call loadDatabase()
-    })
-    await DB.insert([req.query])
+      filename: "data/token.json",
+      autoload: true // so that we don't have to call loadDatabase()
+    });
+    await DB.insert([req.query]);
     // console.log(token)
     // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json")
     // // const data = await getData(token, "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1s/time/01:00/01:10.json")
@@ -36,22 +35,30 @@ router.get('/', async function (req, res, next) {
     // // console.log(util.inspect(data, false, null));
     // console.log(Object.keys(data))
     // // console.log(data2)
-    // res.render('getCode', {code: "code"});
-}, function (err, req, res, next) {
-    res
-        .status(400)
-        .render('error', {error: err})
-});
+    res.render('getCode', {code: "code"});
+  },
+  function(err, req, res, next) {
+    if (err.message !== "no access_token") {
+      console.warn(err);
+      next(err);
+      return;
+    }
+    res.render("InplicitGrantFlow");
+  },
+  function(err, req, res, next) {
+    res.status(400).render("error", { error: err });
+  }
+);
 
 async function getData(token, url) {
-    const options = {
-        url,
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
+  const options = {
+    url,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-    return JSON.parse(await request(options))
+  };
+  return JSON.parse(await request(options));
 }
 
 module.exports = router;
